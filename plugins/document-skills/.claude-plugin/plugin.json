@@ -1,0 +1,8 @@
+{
+  "name": "document-skills",
+  "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com"
+  }
+}
