@@ -1,0 +1,6 @@
+{
+  "upstream_remote": "anthropic-upstream",
+  "upstream_url": "https://github.com/anthropics/skills.git",
+  "upstream_branch": "main",
+  "last_synced_sha": "57546260929473d4e0d1c1bb75297be2fdfa1949"
+}

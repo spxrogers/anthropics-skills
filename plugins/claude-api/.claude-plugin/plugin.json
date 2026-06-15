@@ -1,0 +1,8 @@
+{
+  "name": "claude-api",
+  "description": "Claude API and SDK documentation skill for building LLM-powered applications",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com"
+  }
+}
