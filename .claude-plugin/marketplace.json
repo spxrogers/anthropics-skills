@@ -1,8 +1,8 @@
 {
-  "name": "anthropic-agent-skills",
+  "name": "spx-ant-agent-skills",
   "owner": {
-    "name": "Keith Lazuka",
-    "email": "klazuka@anthropic.com"
+    "name": "Steven R.",
+    "email": "contact@spxrogers.com"
   },
   "metadata": {
     "description": "Anthropic example skills",

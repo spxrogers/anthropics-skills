@@ -26,17 +26,17 @@ Install these de-duplicated plugins from **this fork**. In Claude Code:
 
 ```
 /plugin marketplace add spxrogers/anthropics-skills
-/plugin install document-skills@anthropic-agent-skills
+/plugin install document-skills@spx-ant-agent-skills
 ```
 
 Swap `document-skills` for `example-skills` or `claude-api` to install those instead. The same works from the terminal:
 
 ```
 claude plugin marketplace add spxrogers/anthropics-skills
-claude plugin install document-skills@anthropic-agent-skills
+claude plugin install document-skills@spx-ant-agent-skills
 ```
 
-This fork keeps the upstream marketplace name (`anthropic-agent-skills`), so adding it replaces any existing registration of that name with this fork — and each plugin then installs only its own skills.
+This fork uses the marketplace name `spx-ant-agent-skills` (the upstream name `anthropic-agent-skills` is reserved for `github.com/anthropics/` repos and can't be registered from a fork). Each plugin installs only its own skills.
 
 > [!NOTE]
 > This **Installation** section supersedes the [Try in Claude Code, Claude.ai, and the API](#try-in-claude-code-claudeai-and-the-api) section below. That section is preserved verbatim from the original `anthropics/skills` repository and points at the **upstream** marketplace, which still has the duplicate-skill bug. For this fork, follow the instructions here.
