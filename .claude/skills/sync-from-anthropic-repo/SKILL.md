@@ -66,11 +66,30 @@ updated / new-unmapped / removed-upstream / unchanged.
    `git diff --cached` and commit when satisfied. Suggested message:
    `Sync skills from upstream anthropics/skills (<old>..<new>)`.
 
+## Fork-specific marketplace.json divergence
+
+`.claude-plugin/marketplace.json` has two fields that intentionally diverge from
+upstream and must survive every sync:
+
+- `name`: `spx-ant-agent-skills` — upstream uses `anthropic-agent-skills`, a
+  **reserved** name only `github.com/anthropics/*` repos may register. A fork
+  must use a non-reserved name or `plugin marketplace add` is rejected.
+- `owner`: `Steven R. <contact@spxrogers.com>` — the fork maintainer, not the
+  upstream Anthropic owner block.
+
+Because upstream is the source of truth for *content* only, the script guards
+these explicitly (constants `FORK_MARKETPLACE_NAME` / `FORK_MARKETPLACE_OWNER`):
+`--plan` warns if either has drifted from the fork value; `--apply` re-asserts
+both (preserving key order and the `plugins` list) so a wholesale upstream
+`marketplace.json` can never silently clobber the fork's identity. If you ever
+change the marketplace name or owner, update those two constants to match.
+
 ## Safety properties
 
-- Writes only: `plugins/*/skills/`, `state.json`, the README table region, and —
-  only when you choose a new plugin — a new `plugins/<name>/` + `plugin.json` +
-  one appended `marketplace.json` entry.
+- Writes only: `plugins/*/skills/`, `state.json`, the README table region,
+  `marketplace.json` (re-asserting the fork `name`/`owner` and, only when you
+  choose a new plugin, one appended plugin entry), and — for a new plugin — a new
+  `plugins/<name>/` + `plugin.json`.
 - Never edits existing plugin entries, existing `plugin.json`, README prose,
   `spec/`, `template/`, or this skill itself.
 - Never commits, pushes, or force-anything.

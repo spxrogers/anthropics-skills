@@ -74,6 +74,44 @@ def plugin_order(root: Path) -> list[str]:
     return [p["name"] for p in load_marketplace(root).get("plugins", [])]
 
 
+# Fork-specific marketplace identity. Upstream's marketplace.json registers the
+# name "anthropic-agent-skills" (reserved — only github.com/anthropics/* repos
+# may use it) under Anthropic's owner block. This fork MUST diverge on both: the
+# name is non-reserved so the fork can register, and the owner is the fork
+# maintainer. These two fields are intentional fork edits; an upstream *content*
+# sync must never reset them to upstream values. The guard below detects drift
+# (--plan) and re-asserts the fork values (--apply) so they self-heal if a
+# wholesale upstream marketplace.json ever lands. See SKILL.md.
+FORK_MARKETPLACE_NAME = "spx-ant-agent-skills"
+FORK_MARKETPLACE_OWNER = {"name": "Steven R.", "email": "contact@spxrogers.com"}
+
+
+def marketplace_identity_drift(root: Path) -> list[str]:
+    """Describe any fork-identity fields in marketplace.json that have drifted
+    from the expected fork values. Empty list ⇒ identity is intact."""
+    mp = load_marketplace(root)
+    drift = []
+    if mp.get("name") != FORK_MARKETPLACE_NAME:
+        drift.append(f"name: {mp.get('name')!r} -> {FORK_MARKETPLACE_NAME!r}")
+    if mp.get("owner") != FORK_MARKETPLACE_OWNER:
+        drift.append(f"owner: {mp.get('owner')!r} -> {FORK_MARKETPLACE_OWNER!r}")
+    return drift
+
+
+def restore_marketplace_identity(root: Path) -> list[str]:
+    """Re-assert the fork-specific name/owner in marketplace.json, preserving key
+    order and every other field (incl. the plugins list). Returns the fields that
+    were corrected (empty if already intact, in which case nothing is written)."""
+    drift = marketplace_identity_drift(root)
+    if not drift:
+        return []
+    mp = load_marketplace(root)
+    mp["name"] = FORK_MARKETPLACE_NAME
+    mp["owner"] = FORK_MARKETPLACE_OWNER
+    marketplace_path(root).write_text(json.dumps(mp, indent=2) + "\n")
+    return drift
+
+
 def scan_plugins(root: Path):
     """Return (plugin -> sorted skills, skill -> plugin). Exit on a duplicate skill."""
     plugins_dir = root / "plugins"
@@ -237,6 +275,12 @@ def cmd_plan(root: Path, state: dict) -> None:
     head = git(root, "rev-parse", upstream_ref)
     print(f"Upstream {remote}/{branch} HEAD: {head}")
     print(f"Last synced:            {last or '(none)'}")
+    drift = marketplace_identity_drift(root)
+    if drift:
+        print("\nwarning: marketplace.json fork identity has drifted from the expected "
+              "fork values; --apply will restore it:", file=sys.stderr)
+        for d in drift:
+            print(f"  - {d}", file=sys.stderr)
     if last and last != head:
         print("\nUpstream commits touching skills/ since last sync:")
         print(git(root, "log", "--oneline", f"{last}..{head}", "--", "skills", check=False) or "  (none)")
@@ -286,6 +330,10 @@ def cmd_apply(root: Path, state: dict, assigns: dict, new_plugins: dict, deletes
     for skill in deletes:
         shutil.rmtree(root / "plugins" / skill_to_plugin[skill] / "skills" / skill)
         changed.append(f"-{skill}")
+
+    restored = restore_marketplace_identity(root)
+    for d in restored:
+        changed.append(f"marketplace:{d}")
 
     p2s, _ = scan_plugins(root)
     readme.write_text(update_readme_table(readme.read_text(), render_table(plugin_order(root), p2s)))

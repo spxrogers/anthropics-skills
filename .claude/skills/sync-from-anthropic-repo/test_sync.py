@@ -71,6 +71,47 @@ class TestScanPlugins(unittest.TestCase):
                 sync.scan_plugins(base)
 
 
+class TestMarketplaceIdentity(unittest.TestCase):
+    def _mk(self, base, name, owner):
+        import json
+        d = base / ".claude-plugin"
+        d.mkdir(parents=True)
+        (d / "marketplace.json").write_text(json.dumps(
+            {"name": name, "owner": owner, "metadata": {"x": 1},
+             "plugins": [{"name": "p", "source": "./plugins/p"}]}, indent=2) + "\n")
+
+    def test_intact_no_drift_no_write(self):
+        import tempfile, json
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            self._mk(base, sync.FORK_MARKETPLACE_NAME, sync.FORK_MARKETPLACE_OWNER)
+            before = (base / ".claude-plugin" / "marketplace.json").read_text()
+            self.assertEqual(sync.marketplace_identity_drift(base), [])
+            self.assertEqual(sync.restore_marketplace_identity(base), [])
+            # untouched when already correct
+            self.assertEqual((base / ".claude-plugin" / "marketplace.json").read_text(), before)
+
+    def test_drift_detected_and_restored(self):
+        import tempfile, json
+        with tempfile.TemporaryDirectory() as td:
+            base = Path(td)
+            self._mk(base, "anthropic-agent-skills",
+                     {"name": "Keith Lazuka", "email": "klazuka@anthropic.com"})
+            drift = sync.marketplace_identity_drift(base)
+            self.assertEqual(len(drift), 2)  # both name and owner drifted
+            restored = sync.restore_marketplace_identity(base)
+            self.assertEqual(len(restored), 2)
+            mp = json.loads((base / ".claude-plugin" / "marketplace.json").read_text())
+            self.assertEqual(mp["name"], sync.FORK_MARKETPLACE_NAME)
+            self.assertEqual(mp["owner"], sync.FORK_MARKETPLACE_OWNER)
+            # other fields preserved, key order intact
+            self.assertEqual(mp["metadata"], {"x": 1})
+            self.assertEqual(mp["plugins"], [{"name": "p", "source": "./plugins/p"}])
+            self.assertEqual(list(mp), ["name", "owner", "metadata", "plugins"])
+            # now idempotent
+            self.assertEqual(sync.marketplace_identity_drift(base), [])
+
+
 class TestParseKV(unittest.TestCase):
     def test_ok_and_bad(self):
         self.assertEqual(sync.parse_kv(["skill=plug", "k = v "]), {"skill": "plug", "k": "v"})
