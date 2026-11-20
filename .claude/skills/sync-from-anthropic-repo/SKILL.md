@@ -74,7 +74,8 @@ upstream and must survive every sync:
 - `name`: `spx-ant-agent-skills` — upstream uses `anthropic-agent-skills`, a
   **reserved** name only `github.com/anthropics/*` repos may register. A fork
   must use a non-reserved name or `plugin marketplace add` is rejected.
-- `owner`: `Steven R. <contact@spxrogers.com>` — the fork maintainer, not the
+- `owner`: `Keith Lazuka // reformatted by Steven R.` (email credits both the
+  upstream owner and the fork maintainer) — not the verbatim
   upstream Anthropic owner block.
 
 Because upstream is the source of truth for *content* only, the script guards

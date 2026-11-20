@@ -83,7 +83,10 @@ def plugin_order(root: Path) -> list[str]:
 # (--plan) and re-asserts the fork values (--apply) so they self-heal if a
 # wholesale upstream marketplace.json ever lands. See SKILL.md.
 FORK_MARKETPLACE_NAME = "spx-ant-agent-skills"
-FORK_MARKETPLACE_OWNER = {"name": "Steven R.", "email": "contact@spxrogers.com"}
+FORK_MARKETPLACE_OWNER = {
+    "name": "Keith Lazuka // reformatted by Steven R.",
+    "email": "klazuka@anthropic.com // reformatted changes by Steven R.: contact@spxrogers.com",
+}
 
 
 def marketplace_identity_drift(root: Path) -> list[str]:

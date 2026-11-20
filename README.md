@@ -16,6 +16,8 @@ This is a fork of [anthropics/skills](https://github.com/anthropics/skills) that
 | `document-skills` | docx, pdf, pptx, xlsx |
 | `example-skills` | algorithmic-art, brand-guidelines, canvas-design, doc-coauthoring, frontend-design, internal-comms, mcp-builder, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing |
 | `claude-api` | claude-api |
+| `academy-guide` | academy-guide |
+| `discernment-nudge` | discernment-nudge |
 <!-- END PLUGIN-SKILLS-TABLE -->
 
 To stay current with upstream, this fork includes a local maintenance skill, `.claude/skills/sync-from-anthropic-repo`, which pulls the latest skill updates from `anthropics/skills` and re-applies them into the per-plugin layout without reintroducing the duplication.
@@ -56,7 +58,7 @@ This repository contains skills that demonstrate what's possible with Claude's s
 
 Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
 
-Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`document-skills/skills/docx`](./plugins/document-skills/skills/docx), [`document-skills/skills/pdf`](./plugins/document-skills/skills/pdf), [`document-skills/skills/pptx`](./plugins/document-skills/skills/pptx), and [`document-skills/skills/xlsx`](./plugins/document-skills/skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
+Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`document-skills/skills/docx`](./plugins/document-skills/skills/docx), [`document-skills/skills/pdf`](./plugins/document-skills/skills/pdf), [`document-skills/skills/pptx`](./plugins/document-skills/skills/pptx), and [`document-skills/skills/xlsx`](./plugins/document-skills/skills/xlsx) subfolders. These are also open source (Apache 2.0), and we wanted to share them with developers as a reference for more complex skills that are actively used in a production AI application.
 
 ## Disclaimer
 
