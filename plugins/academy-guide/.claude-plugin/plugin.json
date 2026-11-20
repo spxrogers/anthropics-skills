@@ -1,0 +1,8 @@
+{
+  "name": "academy-guide",
+  "description": "Recommends relevant Claude Academy courses, tutorials, and use cases when users ask how to use Claude",
+  "author": {
+    "name": "Anthropic",
+    "email": "support@anthropic.com"
+  }
+}
